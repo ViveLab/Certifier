@@ -1,6 +1,16 @@
-Certifier.deployed().then(i => certifier = i)
-certifier.addCourse('SE', 'Solidity', 3, 9, 80, ['ab', 'bc', 'cd'], {from: acc1})
-txAC = web3.eth.getTransaction('0x1fa3a666745140d4ecee32696246da2a13844668806510f6292fcc865a06aec7')
-web3.toAscii(txAC.input).replace(/u0000/g, ' ')
-course = certifier.getCourse('SE')
-course.then(c => c[4]).then(codes => {codes.forEach(code => console.log(web3.toAscii(code)))})' ')
+# certifier
+
+## Project setup
+```
+yarn install
+```
+
+### Compiles and hot-reloads for development
+```
+yarn run serve
+```
+
+### Compiles and minifies for production
+```
+yarn run build
+```
