@@ -15,13 +15,36 @@ const actions = {
     const contract = web3.eth.contract(abi).at(contractAddress)
     commit(constants.COURSE_SET_CONTRACT, contract)
     web3.eth.getCoinbase((error, coinbase) => {
-      if(error) console.error(error)
+      if (error) console.error(error)
       commit(constants.COURSE_SET_COINBASE, coinbase)
       contract.isOwner({from: coinbase}, (error, isOwner) => {
-        if(error) console.error(error)
+        if (error) console.error(error)
         commit(constants.COURSE_SET_IS_OWNER, isOwner)
       })
     })
+  },
+  [constants.COURSE_ADD_COURSE]: ({state}, data) => {
+    const {
+      courseCode,
+      courseName,
+      courseCost,
+      courseDuration,
+      courseThreshold,
+      codes
+    } = data
+    state.contract.addCourse(
+      courseCode,
+      courseName,
+      courseCost,
+      courseDuration,
+      courseThreshold,
+      codes,
+      {from: state.coinbase},
+      (error, result) => {
+        if(error) console.error(error)
+        console.info(result)
+      }
+    )
   }
 }
 

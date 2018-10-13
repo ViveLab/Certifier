@@ -64,10 +64,11 @@ export default {
   },
   methods: {
     ...mapActions({
-      init: constants.COURSE_INIT
+      init: constants.COURSE_INIT,
+      addCourse: constants.COURSE_ADD_COURSE
     }),
     save () {
-      console.log(':)')
+      this.addCourse(this.form)
     }
   },
   created () {
