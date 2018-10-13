@@ -11,7 +11,7 @@ const state = {
 const actions = {
   [constants.COURSE_INIT]: ({commit}) => {
     const abi = CourseContract.abi
-    const contractAddress = '0x11589f14727997Df90f7668f4f095AAC0fA645FE'
+    const contractAddress = '0xd3b7e7246c3c8a1f49506a766795976512f1c7cb'
     const contract = web3.eth.contract(abi).at(contractAddress)
     commit(constants.COURSE_SET_CONTRACT, contract)
     web3.eth.getCoinbase((error, coinbase) => {

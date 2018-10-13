@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1>Certifier</h1>
-    <form @submit.prevent="save">
+    <form @submit.prevent="save" v-if="isOwner">
       <div class="form-group">
         <label for="courseCode">Codigo curso</label>
         <input type="text" class="form-control" id="courseCode" placeholder="Codigo curso" v-model="form.courseCode">
@@ -32,11 +32,15 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-    {{form}}
+    <div class="alert alert-danger" role="alert" v-else>
+      No eres el dueno o no has iniciado sesion o no tienes metamask
+    </div>
   </div>
 </template>
 
 <script>
+import {mapActions, mapState} from 'vuex'
+import * as constants from '@/store/constants'
 
 export default {
   name: 'home',
@@ -53,10 +57,21 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      isOwner: state => state.Course.isOwner
+    })
+  },
   methods: {
+    ...mapActions({
+      init: constants.COURSE_INIT
+    }),
     save () {
       console.log(':)')
     }
+  },
+  created () {
+    this.init()
   }
 }
 </script>
