@@ -28,7 +28,7 @@
         <button type="button" class="btn btn-success" @click="sessions--">Borrar sesion</button>
       </div>
       <div class="form-group" v-for="(code, idx) in sessions" v-if="sessions">
-        <input type="text" class="form-control" :placeholder="`Session ${code}`" v-model="form.codes">
+        <input type="text" class="form-control" :placeholder="`Session ${code}`" v-model="form.codes[idx]">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
