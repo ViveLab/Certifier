@@ -21,6 +21,13 @@ contract Certifier {
     uint intensity;
     uint threshold;
     uint minimumStudent;
+    mapping(bytes32 => Student) students;
+    bytes32[] studentsIds;
+  }
+
+  struct Student {
+    string name;
+    string email;
   }
 
   function addCourse(
@@ -40,7 +47,8 @@ contract Certifier {
       courseCost: _courseCost,
       intensity: _intensity,
       threshold: _threshold,
-      minimumStudent: _minimumStudent
+      minimumStudent: _minimumStudent,
+      studentsIds: new bytes32[](0)
     });
   }
 
@@ -63,5 +71,30 @@ contract Certifier {
       courseTmp.threshold,
       courseTmp.minimumStudent
     );
+  }
+
+  function subscribeToCourse(
+    uint _courseId,
+    bytes32 _id,
+    string memory _name,
+    string memory _email
+  ) public payable {
+    Course storage course = courses[_courseId];
+    require(course.courseCost * 1 ether == msg.value, "You should pay the exact value");
+    course.students[_id] = Student({
+      name: _name,
+      email: _email
+    });
+    course.studentsIds.push(_id);
+  }
+
+  function getStudentByCourseAndId(
+    uint _courseId,
+    bytes32 _id
+  ) public view onlyOwner returns(string memory _name, string memory _email) {
+    Course storage course = courses[_courseId];
+    Student storage student = course.students[_id];
+    _name = student.name;
+    _email = student.email;
   }
 }

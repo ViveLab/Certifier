@@ -73,4 +73,62 @@ contract('Certifier', accounts => {
       ).to.be.eventually.rejected;
     });
   });
+  describe('Students', () => {
+    const [owner, student] = accounts;
+    const courseId = 123;
+    const courseCost = 3;
+    const name = 'Juana Pena';
+    const id = 'CC123';
+    const email = 'jp@a.com';
+    it('should be able to subscribe correctly', () => {
+      return certifier.subscribeToCourse(
+        courseId,
+        web3.utils.toHex( id ),
+        name,
+        email,
+        {
+          from: student,
+          value: web3.utils.toWei(web3.utils.toBN( courseCost ))
+        }
+      )
+        .then(response => {
+          expect(response.tx).to.match(/0x[a-fA-F0-9]{64}/);
+        });
+    });
+    it('should retrieve a student by course code and student id', () => {
+      return certifier.getStudentByCourseAndId(courseId, web3.utils.toHex( id ))
+        .then(student => {
+          expect(student['0']).to.eq(name);
+          expect(student['1']).to.eq(email);
+        });
+    });
+    it('should fail when paying less for subscription', () => {
+      return expect(
+        certifier.subscribeToCourse(
+          courseId,
+          web3.utils.toHex( id ),
+          name,
+          email,
+          {
+            from: student,
+            value: web3.utils.toWei(web3.utils.toBN( courseCost - 1 ))
+          }
+        )
+      ).to.be.eventually.rejected;
+    });
+    it('should fail when paying more for subscription', () => {
+      return expect(
+        certifier.subscribeToCourse(
+          courseId,
+          web3.utils.toHex( id ),
+          name,
+          email,
+          {
+            from: student,
+            value: web3.utils.toWei(web3.utils.toBN( courseCost + 1 ))
+          }
+        )
+      ).to.be.eventually.rejected;
+    });
+  });
 });

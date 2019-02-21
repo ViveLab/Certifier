@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "contracts": "rm -rf src/contracts && truffle compile && cp -r build/contracts src"
   },
   "dependencies": {
     "moment": "^2.24.0",
