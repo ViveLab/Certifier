@@ -1,76 +1,67 @@
-pragma solidity ^0.4.23;
+pragma solidity >=0.4.23 <0.6.0;
 
 contract Certifier {
-    address public owner;
-    uint public last_completed_migration;
-    mapping(bytes32 => Course) courses;
+  address public owner;
+  mapping(uint => Course) courses;
 
-    struct Course {
-        string name;
-        uint cost;
-        uint duration;
-        uint threshold;
-        bytes32[] codes;
-        mapping(address => Student) students;
-    }
+  constructor() public {
+    owner = msg.sender;
+  }
 
-    struct Student {
-        string fname;
-        string lname;
-        uint age;
-        string email;
-        bytes32[] codes;
-    }
+  modifier onlyOwner() {
+    require(msg.sender == owner, "Usted no esta autorizado");
+    _;
+  }
 
-    constructor() public {
-        owner = msg.sender;
-    }
+  struct Course {
+    string courseName;
+    uint startingDate;
+    uint endingDate;
+    uint courseCost;
+    uint intensity;
+    uint threshold;
+    uint minimumStudent;
+  }
 
-    modifier restricted() {
-        require(msg.sender == owner);
-        _;
-    }
+  function addCourse(
+    uint _courseId,
+    string memory _courseName,
+    uint _startingDate,
+    uint _endingDate,
+    uint _courseCost,
+    uint _intensity,
+    uint _threshold,
+    uint _minimumStudent
+  ) public onlyOwner {
+    courses[_courseId] = Course({
+      courseName: _courseName,
+      startingDate: _startingDate,
+      endingDate: _endingDate,
+      courseCost: _courseCost,
+      intensity: _intensity,
+      threshold: _threshold,
+      minimumStudent: _minimumStudent
+    });
+  }
 
-    function isOwner() public view returns (bool) {
-        return msg.sender == owner;
-    }
-
-    function addCourse(
-        bytes32 _code,
-        string _name,
-        uint _cost,
-        uint _duration,
-        uint _threshold,
-        bytes32[] _codes) public restricted {
-        courses[_code] = Course({
-            name : _name,
-            cost : _cost,
-            duration : _duration,
-            threshold : _threshold,
-            codes : _codes
-            });
-    }
-
-    function getCourse(bytes32 _code) public view restricted returns (string, uint, uint, uint, bytes32[]) {
-        Course storage course = courses[_code];
-        return (course.name, course.cost, course.duration, course.threshold, course.codes);
-    }
-
-    function subscribe(
-        bytes32 _code,
-        string _fname,
-        string _lname,
-        uint _age,
-        string _email
-    ) public payable {
-        require(msg.value == 3 ether, "You haven't sent exactly 3 ether");
-        Course storage course = courses[_code];
-        course.students[msg.sender] = Student({
-            fname : _fname,
-            lname : _lname,
-            age : _age,
-            email : _email,
-            codes : new bytes32[](0)
-            });
-    }
+  function getCourseByID(uint _courseId) public view returns(
+    string memory,
+    uint,
+    uint,
+    uint,
+    uint,
+    uint,
+    uint
+  ) {
+    Course memory courseTmp = courses[_courseId];
+    return (
+      courseTmp.courseName,
+      courseTmp.startingDate,
+      courseTmp.endingDate,
+      courseTmp.courseCost,
+      courseTmp.intensity,
+      courseTmp.threshold,
+      courseTmp.minimumStudent
+    );
+  }
 }
